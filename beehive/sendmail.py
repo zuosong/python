@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-·¢ËÍ´íÎóÈÕÖ¾
+ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾
 '''
 import os
 import smtplib
@@ -14,15 +14,15 @@ from email.mime.application import MIMEApplication
 def send_mail(to_list,sub,content): #
     mail_host = "smtp.163.com"
     mail_user = "zu.so"
-    mail_pass = "zs@mail2"
+    mail_pass = "qwerty"
     mail_postfix = "163.com"
 
-    me = "´íÎóÈÕÖ¾" + "<" + mail_user + "@" + mail_postfix + ">"
+    me = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾" + "<" + mail_user + "@" + mail_postfix + ">"
     msg = MIMEMultipart()
     msg['Subject'] = sub
     msg['From'] = me
     msg['To'] = to_list
-    #ÓÊ¼şÕı
+    #ï¿½Ê¼ï¿½ï¿½ï¿½
     part = MIMEText(open(objectdir,'r').read(),_charset='gb2312')
     msg.attach(part)
 
@@ -67,9 +67,9 @@ if __name__ == '__main__':
 
     getContent(sourcedir,objectdir)
     if os.path.getsize(objectdir):
-        if send_mail(mailto_list,"´íÎóÈÕÖ¾_"+yes_date,objectdir):
-            print "·¢ËÍ³É¹¦"
+        if send_mail(mailto_list,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾_"+yes_date,objectdir):
+            print "ï¿½ï¿½ï¿½Í³É¹ï¿½"
         else:
-            print "·¢ËÍÊ§°Ü"
+            print "ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½"
     else:
-        print "ÎŞ´íÎóÈÕÖ¾£¬Î´·¢ËÍÓÊ¼ş"
+        print "ï¿½Ş´ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½"

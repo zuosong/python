@@ -39,16 +39,16 @@ def status_code():
           if response:
             #print 'The url',url,'Code: ',response.getcode()
             response.close()
-    
+
     sys.stdout = savedStdout #change the output to the screen
-    
+
 def send_mail(to_list,sub,content): #
     mail_host = "smtp.163.com"
     mail_user = "zu.so"
-    mail_pass = "zs@mail2"
+    mail_pass = "qwerty"
     mail_postfix = "163.com"
 
-    me = "¹«Ë¾±¦" + "<" + mail_user + "@" + mail_postfix + ">"
+    me = "ï¿½ï¿½Ë¾ï¿½ï¿½" + "<" + mail_user + "@" + mail_postfix + ">"
     msg = MIMEMultipart()
     msg['Subject'] = sub
     msg['From'] = me
@@ -93,8 +93,8 @@ if __name__ == '__main__':
     getContent(sourcedir,objectdir)
     if os.path.getsize(objectdir):
         if send_mail(mailto_list," "+time,objectdir):
-            print "ÓÊ¼þ·¢ËÍ³É¹¦!"
+            print "ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Í³É¹ï¿½!"
         else:
-            print "ÓÊ¼þ·¢ËÍÊ§°Ü!"
+            print "ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½!"
     else:
         print  "No errorlog,the mail was not sended"

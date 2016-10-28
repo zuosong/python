@@ -7,7 +7,7 @@ from time import sleep
 SMTPSVR = 'smtp.163.com'
 POP3SVR= 'pop3.163.com'
 popacnt='zu.so'
-mailpswd='zs@mail2'
+mailpswd='qwerty'
 
 
 origHdrs = ['From:zu.so@163.com','To:zuosong_0@163.com','Subject:test msg']
@@ -23,7 +23,7 @@ sleep(10)
 
 recvSvr = POP3(POP3SVR)
 recvSvr.user('zuosong_0')
-recvSvr.pass_('Zs@mail2')
+recvSvr.pass_('qwerty')
 rsp,msg,siz = recvSvr.retr(recvSvr.stat()[0])
 
 sep = msg.index('')
