@@ -8,10 +8,6 @@ import sys
 import urllib2
 from time import sleep
 
-SMTPSVR = 'smtp.163.com'
-POP3SVR= 'pop3.163.com'
-popacnt='zu.so'
-mailpswd='zs@mail2'
 f = open("page1.txt","r")
 file = open("out1.txt","w+")
 savedStdout = sys.stdout #保存标准输出流
