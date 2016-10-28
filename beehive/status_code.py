@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 #encoding=utf-8
 #Filename:states_code.py
+#version 1.0
 
 import sys
-
 import urllib2
 from time import sleep
 
@@ -25,7 +25,7 @@ for url in urlList:
         print 'Reason:',e.reason
     finally:
       if response:
-        print 'The url',url,'Code: ',response.getcode()
+        #print 'The url',url,'Code: ',response.getcode()
         response.close()
 
 sys.stdout = savedStdout #恢复标准输出流

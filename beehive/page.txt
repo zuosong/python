@@ -8,7 +8,6 @@ http://app.gongsibao.com/api/discovery/getbycolumnid?columnid=3bd5fb38-af40-4597
 http://app.gongsibao.com/api/discovery/getbycolumnid?columnid=29a8aeea-061d-4d6a-afa8-a76c8314783b&pageindex=1
 http://app.gongsibao.com/api/discovery/getcolumnlist
 http://app.gongsibao.com/api/home/getversion?versionno=3.0.4
-
 http://www.gongsibao.com/product_187/1.html
 http://www.gongsibao.com/item/75.html?catid=200
 http://www.gongsibao.com/combo/detail/3.html
@@ -28,7 +27,7 @@ http://www.gongsibao.com/login.html?redirect=/account/orderlist
 http://www.gongsibao.com/zt/mkt/csdl/1604/index.html
 http://www.gongsibao.com/zt/merger/PC/index.html
 http://www.gongsibao.com/zt/project/companyRegister/index.html
-http://www.gongsibao.com/zt/mkt/gszc/1603/index.html 
+http://www.gongsibao.com/zt/mkt/gszc/1603/index.html
 http://www.gongsibao.com/zt/mkt/gszc/1606/index.html
 http://www.gongsibao.com/zt/mkt/rzzl/1605/index.html
 http://www.gongsibao.com/zt/mkt/syblzc/1608/index.html
@@ -70,7 +69,7 @@ http://www.gongsibao.com/combo/detail/3.html
 http://www.gongsibao.com/item/75.html?catid=200
 http://www.gongsibao.com/item/43.html
 http://www.gongsibao.com/item/47.html?catid=206
-http://www.gongsibao.com/item/197.html?catid=432
+http://www.gongsibao.com/item/1097.html?catid=432
 http://www.gongsibao.com/item/196.html?catid=432
 http://www.gongsibao.com/item/173.html?catid=430
 http://www.gongsibao.com/item/316.html?catid=591
