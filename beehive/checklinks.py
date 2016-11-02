@@ -48,7 +48,7 @@ def send_mail(to_list,sub,content): #
     mail_pass = "qwerty"
     mail_postfix = "163.com"
 
-    me = "��˾��" + "<" + mail_user + "@" + mail_postfix + ">"
+    me = "SUPPORT" + "<" + mail_user + "@" + mail_postfix + ">"
     msg = MIMEMultipart()
     msg['Subject'] = sub
     msg['From'] = me
@@ -85,16 +85,17 @@ def getContent(resouce,final):
 
 if __name__ == '__main__':
     status_code()
+    time.sleep(10)
     sourcedir = "out.txt"
     objectdir = "error_log.txt"
-    mailto_list= "zu.so@163.com"
+    mailto_list= "190918454@qq.com"
     time = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 
     getContent(sourcedir,objectdir)
     if os.path.getsize(objectdir):
         if send_mail(mailto_list," "+time,objectdir):
-            print "�ʼ����ͳɹ�!"
+            print "Well Done! The mail was sent!"
         else:
-            print "�ʼ�����ʧ��!"
+            print "Failed! The mail was not sent!"
     else:
         print  "No errorlog,the mail was not sended"

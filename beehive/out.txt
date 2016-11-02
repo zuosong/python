@@ -1,4 +1,0 @@
-The url http://www.gongsibao.com/item/34.html
-retrun Error code: 500
-The url http://beehive.gongsibao.net/hive/lo1gin.html
-retrun Error code: 404

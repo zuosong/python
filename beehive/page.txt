@@ -1,8 +1,7 @@
 http://www.gongsibao.com
 http://www.gongsibao.com/item/75.html?catid=200
-http://www.gongsibao.com/item/34.html
 http://www.gongsibao.com/item/316.html?catid=222
-http://beehive.gongsibao.net/hive/lo1gin.html
+http://beehive.gongsibao.net/hive/login.html
 http://m.gongsibao.com
 http://app.gongsibao.com/api/discovery/getbycolumnid?columnid=3bd5fb38-af40-4597-949d-40504a2f3159&pageindex=1
 http://app.gongsibao.com/api/discovery/getbycolumnid?columnid=29a8aeea-061d-4d6a-afa8-a76c8314783b&pageindex=1
