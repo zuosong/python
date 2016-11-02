@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #encoding=utf-8
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
+#from selenium.common.exceptions import NoSuchElementException
+#from selenium.webdriver.common.keys import Keys
 import time
 
 browser = webdriver.Chrome(executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe") # Get local session of firefox
@@ -18,7 +18,7 @@ user.clear()
 user.send_keys("18618447700")
 password = browser.find_element_by_xpath("//input[@name='password']")
 password.clear()
-password.send_keys("admin111")
+password.send_keys("qwerty")
 time.sleep(1)
 form = browser.find_element_by_name("dosubmit")
 form.submit()
@@ -31,7 +31,6 @@ except:
 time.sleep(1)
 browser.get("http://www.gongsibao.com/item/75.html?catid=200")
 time.sleep(3)
-#buybtn=browser.find_element_by_xpath("选Ta服务")
 buybtn=browser.find_element_by_xpath("//ul[@id='supplier']/li/div[2]/span[3]").click()
 #buybtn.click()
 time.sleep(2)
