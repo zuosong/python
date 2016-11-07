@@ -20,7 +20,7 @@ def excel():
     sleep(1)
     for i in RANGE:
         sh.Cells(i,1).Value = 'Line %d'  %i
-	sleep(1)
+    sleep(1)
     sh.Cells(i+2,1).Value = "Th-th-th-that's all folks!"
     warn(app)
     ss.Close(False)
