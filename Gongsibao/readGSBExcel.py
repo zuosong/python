@@ -97,7 +97,7 @@ def get_status_code(url):
             #print 'The url',url,'Code: ',response.getcode()
             response.close()
 
-#根据页面的cookie值判断是否登录成功，输入参数：浏览器对象；返回：true/false
+#根据页面的cookie值判断是否登录成功，输入参数：浏览器对象；返回：true/false;
 def if_login(obj):
     browser = obj
     rtn_log_cookie="return document.cookie.includes('CompanyPlusAccountUser')"
