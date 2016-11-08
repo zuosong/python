@@ -60,7 +60,7 @@ def get_yesterday_date():
 if __name__ == '__main__':
     sourcedir = "out.txt"
     objectdir = "error_log.txt"
-    mailto_list= "zuosong@gongsibao.com"
+    mailto_list= "test@gongsibao.com"
     yes_date = get_yesterday_date()
 
     getContent(sourcedir,objectdir)

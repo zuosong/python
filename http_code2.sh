@@ -8,4 +8,4 @@ else
 echo -e "$i:\t$STATUS_CODE" >> status.log 
 fi
 done
-blat mail.txt -to 2264215919@qq.com -attach "status.log" -s "系统邮件" -u zuosong@gongsibao.com -pw gongsibao@0727 -charset Gb2312
+blat mail.txt -to 2264215919@qq.com -attach "status.log" -s "系统邮件" -u test@gongsibao.com -pw fqwwewrw -charset Gb2312
