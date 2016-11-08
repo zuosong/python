@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #encoding=utf-8
+"""
+利用document.cookie.includes('CompanyPlusAccountUser')判断cookie中是否有标识登录的字段
+利用execute_script()执行一段js代码
+"""
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +18,7 @@ mov = """
       var y = 0;
       var step = 100;
       window.scroll(0, 0);
- 
+
       function f() {
         if (y < document.body.scrollHeight) {
           y += step;
@@ -25,7 +29,7 @@ mov = """
           document.title += "scroll-done";
         }
       }
- 
+
       setTimeout(f, 1000);
     })();
   """
@@ -37,10 +41,10 @@ browser.find_element_by_link_text("登录").click()
 time.sleep(2)
 user = browser.find_element_by_xpath("//input[@name='username']")
 user.clear()
-user.send_keys("18618447716")
+user.send_keys("18618447700")
 password = browser.find_element_by_xpath("//input[@name='password']")
 password.clear()
-password.send_keys("admin111")
+password.send_keys("qweerr")
 time.sleep(1)
 form = browser.find_element_by_name("dosubmit")
 form.submit()

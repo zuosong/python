@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+"""
+利用win32com.client对Excel文件进行写操作
+"""
 from Tkinter import Tk
 from time import sleep
 from tkMessageBox import showwarning

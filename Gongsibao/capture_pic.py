@@ -3,11 +3,13 @@
 #
 # author: oldj <oldj.wu@gmail.com>
 #
- 
+"""
+利用selenium中的截图browser.save_screenshot(save_fn)进行截图操作
+"""
 from selenium import webdriver
 import time
- 
- 
+
+
 def capture(url, save_fn="capture.png"):
   browser = webdriver.Chrome(executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")  # Get local session of Chrome
   browser.set_window_size(1200, 900)
@@ -17,7 +19,7 @@ def capture(url, save_fn="capture.png"):
       var y = 0;
       var step = 100;
       window.scroll(0, 0);
- 
+
       function f() {
         if (y < document.body.scrollHeight) {
           y += step;
@@ -28,19 +30,19 @@ def capture(url, save_fn="capture.png"):
           document.title += "scroll-done";
         }
       }
- 
+
       setTimeout(f, 1000);
     })();
   """)
- 
+
   for i in xrange(30):
     if "scroll-done" in browser.title:
       break
     time.sleep(1)
- 
+
   browser.save_screenshot(save_fn)
   browser.close()
- 
- 
+
+
 if __name__ == "__main__":
    capture("http://www.gongsibao.com","new.png")
