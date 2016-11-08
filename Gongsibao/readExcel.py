@@ -5,7 +5,7 @@ import xlrd
 def open_excel(file='file.xlsx'):
     try:
         data = xlrd.open_workbook(file)
-	return data
+        return data
     except Exception,e:
         print str(e)
 #根据索引获取Excel表格中的数据，参数：file：excel件路径，colnameindex:表头列名所在行的索引，by_index:表的索引
