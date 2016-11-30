@@ -1,5 +1,6 @@
 The url http://www.gongsibao.com/product_187/1.html
 retrun Error code: 404
+Reason: timed out
 The url http://www.gongsibao.com/zt/project/microFinance/index.html
 retrun Error code: 404
 The url http://www.gongsibao.com/item/1097.html?catid=432
