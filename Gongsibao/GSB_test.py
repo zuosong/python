@@ -73,19 +73,27 @@ def get_page_performance(obj):
 #The main function
 def main():
     url = raw_input("Please enter you url: ")
-    http_code=get_httpcode(url)
-    if 200==http_code:
-        browser=load_page(url)
-        account=raw_input("Please enter your phone number: ")
-        passwd=raw_input("Please enter your password: ")
-        login_gsb(browser,account,passwd)
-        time.sleep(1)
-        check_cookies(browser)
-        close_browser(browser)
-    else:
-        print "Please check the url you entered!"
-
-
+    response = None
+    try:
+        response = urllib2.urlopen(url,timeout=5)
+    except urllib2.URLError as e:
+        if hasattr(e, 'code'):
+            print 'Error code:',e.code
+        elif hasattr(e, 'reason'):
+            print 'Reason:',e.reason
+    finally:
+        if response:
+            browser=load_page(url)
+            account=raw_input("Please enter your phone number: ")
+            passwd=raw_input("Please enter your password: ")
+            login_gsb(browser,account,passwd)
+            loadtime=get_page_performance(browser)
+            print "The loadtime of the page is: %d " %loadtime
+            time.sleep(1)
+            check_cookies(browser)
+            capture_pic(browser,"capture.jpg")
+            close_browser(browser)
+            response.close()
 
 if __name__=="__main__":
     main()
