@@ -5,10 +5,15 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time
-import sys
+import sys,xdrlib
 import urllib2
+import xlrd
 #set the the path of chromedriver.exe
 chrome_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+#数据文件存储名称及路径
+file_excel='E:\Private Doc\\files\\file.xlsx'
+row_start=2#url地址从第2行开始
+row_end=17#url地址在第17行结束
 
 #Use the webdriver to load the page
 #input:url,return:browser object
@@ -62,38 +67,51 @@ def get_page_performance(obj):
     time2=browser.execute_script("""return window.performance.timing.loadEventEnd;""")
     return time2-time1
 
-#get the http_code if there if an error
-#Input:page url,return: error code
-#def get_httpcode(url):
-#    url =url
-#    response = urllib2.urlopen(url,timeout=5)
-#    return response.getcode()
-#    response.close()
+def get_url_list(file=file_excel,by_name=u'Sheet1',col_num=6):
+    try:
+        data = xlrd.open_workbook(file)
+        table = data.sheet_by_name(by_name)
+        nrows = table.nrows
+        ncols = table.ncols
+        list = []
+        list = table.col_values(col_num)
+        return list[row_start:row_end]
+    except Exception,e:
+        print str(e)
 
 #The main function
 def main():
-    url = raw_input("Please enter you url: ")
-    response = None
-    try:
-        response = urllib2.urlopen(url,timeout=5)
-    except urllib2.URLError as e:
-        if hasattr(e, 'code'):
-            print 'Error code:',e.code
-        elif hasattr(e, 'reason'):
-            print 'Reason:',e.reason
-    finally:
-        if response:
-            browser=load_page(url)
-            account=raw_input("Please enter your phone number: ")
-            passwd=raw_input("Please enter your password: ")
-            login_gsb(browser,account,passwd)
-            loadtime=get_page_performance(browser)
-            print "The loadtime of the page is: %d " %loadtime
-            time.sleep(1)
-            check_cookies(browser)
-            capture_pic(browser,"capture.jpg")
-            close_browser(browser)
-            response.close()
+    dict_performance={}
+    dict_httpcode={}
+    url_list = get_url_list(file_excel,u'Sheet1',6)
+    for i in range(len(url_list)):
+        response = None
+        try:
+            response = urllib2.urlopen(url_list[i],timeout=5)
+        except urllib2.URLError as e:
+            if hasattr(e, 'code'):
+                print 'Error code:',e.code
+                dict_httpcode[url_list[i]]=e.code
+            elif hasattr(e, 'reason'):
+                print 'Reason:',e.reason
+                dict_httpcode[url_list[i]]=e.reason
+        finally:
+            if response:
+                dict_httpcode[url_list[i]]=response.getcode()
+                browser=load_page(url_list[i])
+                if check_cookies(browser):
+                    #login_gsb(browser,"18618447716","qqqqqqqq")
+                #account=raw_input("Please enter your phone number: ")
+                #passwd=raw_input("Please enter your password: ")
+                #
+                loadtime=get_page_performance(browser)
+                print "The loadtime of the page is: %d ms " %loadtime
+                dict_performance[url_list[i]]=loadtime
+                time.sleep(1)
+                close_browser(browser)
+                response.close()
+    print dict_performance
+    print dict_httpcode
 
 if __name__=="__main__":
     main()

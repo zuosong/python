@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 
 browser = webdriver.Chrome(executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe") # Get local session of Chrome
-loadpage="http://www.gongsibao.com"
+loadpage="http://www.gongsibao.com/login.html"
 browser.get(loadpage) # Load page
 #assert "公司宝".decode('utf-8') in browser.title
 
@@ -23,11 +23,12 @@ password.send_keys("admin111")
 time.sleep(1)
 form = browser.find_element_by_name("dosubmit")
 form.submit()
-try:
-    loginuser = browser.find_element_by_link_text("18618447716")
-    print "Login success!"
-except:
-    print "Failed!"
+time.sleep(10)
+#try:
+    #loginuser = browser.find_element_by_link_text("18618447716")
+#    print "Login success!"
+#except:
+#    print "Failed!"
 
 time.sleep(1)
 #browser.get("http://www.gongsibao.com/item/75.html?catid=200")
