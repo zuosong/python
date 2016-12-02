@@ -1,4 +1,4 @@
-#!/usr/bin/env python     
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from win32com.client import Dispatch
 import win32com.client
@@ -64,10 +64,10 @@ class easyExcel:
 #下面是一些测试代码。
 if __name__ == "__main__":
       #PNFILE = r'c:/screenshot.bmp'
-      xls = easyExcel(r'D:/mypyhon/test.xls')
+      xls = easyExcel(r'E:\\Private Doc\\files\\test.xls')
       #xls.addPicture('Sheet1', PNFILE, 20,20,1000,1000)
       #xls.cpSheet('Sheet1')
-      xls.setCell('sheet1',2,'A',88)
+      xls.setCell('sheet1',2,'A',"A2")
       row=1
       col=1
       print("*******beginsetCellformat********")

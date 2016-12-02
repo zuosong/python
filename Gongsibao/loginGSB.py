@@ -16,16 +16,16 @@ browser.find_element_by_link_text("登录").click()
 time.sleep(2)
 user = browser.find_element_by_xpath("//input[@name='username']")
 user.clear()
-user.send_keys("18618447716")
+user.send_keys("1861xxx7716")
 password = browser.find_element_by_xpath("//input[@name='password']")
 password.clear()
-password.send_keys("admin111")
+password.send_keys("qweer")
 time.sleep(1)
 form = browser.find_element_by_name("dosubmit")
 form.submit()
 time.sleep(10)
 #try:
-    #loginuser = browser.find_element_by_link_text("18618447716")
+    #loginuser = browser.find_element_by_link_text("qwert")
 #    print "Login success!"
 #except:
 #    print "Failed!"
