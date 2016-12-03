@@ -72,7 +72,7 @@ class Crawler(object):
 	ftype = os.path.splitext(fname)[1]
 	if ftype not in ('.html','.htm'):
 	    return
-	
+
 	for link in r.parse_links():
 	    if link.startswith('mailto:'):
 	        print '... discard,mailto link'
