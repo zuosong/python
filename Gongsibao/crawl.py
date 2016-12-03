@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""""""
+"""From computer in company"""
 import cStringIO
 import formatter
 from htmllib import HTMLParser
