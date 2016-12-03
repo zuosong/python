@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+""""""
 import cStringIO
 import formatter
 from htmllib import HTMLParser
