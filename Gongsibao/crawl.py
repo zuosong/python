@@ -34,15 +34,14 @@ class Retriever(object):
             retval = urllib.urlretrieve(self.url,self.file)
         except(IOError,httplib.InvalidURL) as e:
             retval = (('*** ERROR:bad URL "%s":%s' %(self.url,e)),)
-	    return retval
+        return retval
 
     def parse_links(self):
         'Parse out the links found in downloader HTML file'
         f = open(self.file,'r')
         data = f.read()
         f.close()
-        parser = HTMLParser(formatter.AbstractFormatter(
-	       formatter.DumbWriter(cStringIO.StringIO())))
+        parser = HTMLParser(formatter.AbstractFormatter(formatter.DumbWriter(cStringIO.StringIO())))
         parser.feed(data)
         parser.close()
         return parser.anchorlist
@@ -62,40 +61,40 @@ class Crawler(object):
         r = Retriever(url)
         fname = r.download()[0]
         if fname[0] == '*':
-	        print fname,'...skipping parse'
-	        return
+            print fname,'...skipping parse'
+            return
         Crawler.count +=1
         print '\n(',Crawler.count,')'
         print 'URL:',url
         print 'FILE:',fname
-	self.seen.add(url)
-	ftype = os.path.splitext(fname)[1]
-	if ftype not in ('.html','.htm'):
-	    return
+        self.seen.add(url)
+        ftype = os.path.splitext(fname)[1]
+        if ftype not in ('.html','.htm'):
+            return
 
         for link in r.parse_links():
-	    if link.startswith('mailto:'):
-	        print '... discard,mailto link'
-	        continue
+            if link.startswith('mailto:'):
+                print '... discard,mailto link'
+                continue
             if not media:
-	        ftype = os.path.splitext(link)[1]
-		if ftype in ('.mp3','.mp4','.m4v','.wav'):
-		    print '... discard,media file'
-		    continue
+                ftype = os.path.splitext(link)[1]
+                if ftype in ('.mp3','.mp4','.m4v','.wav'):
+                    print '... discard,media file'
+                    continue
             if not link.startswith('http://'):
-	        link = urlparse.urljoin(url,link)
-	    print '*',link,
-	    if link not in self.seen:
+                link = urlparse.urljoin(url,link)
+            print '*',link,
+            if link not in self.seen:
                 if self.dom not in link:
                     print '... discarded, not in domain'
-		else:
-		    if link not in self.q:
-		        self.q.append(link)
-		        print '... new,add to Q'
-		    else:
+                else:
+                    if link not in self.q:
+                        self.q.append(link)
+                        print '... new,add to Q'
+                    else:
                         print '... discarded ,already in Q'
-	    else:
-	            print '... discarded, already processed'
+            else:
+                print '... discarded, already processed'
 
     def go(self,media = False):
         'Process next page in queue(if any)'
@@ -108,9 +107,9 @@ def main():
         url = sys.argv[1]
     else:
         try:
-	    url = raw_input('Enter starting URL: ')
-	except(KeyboardInterrupt,EOFError):
-	    url = ''
+            url = raw_input('Enter starting URL: ')
+        except(KeyboardInterrupt,EOFError):
+            url = ''
     if not url:
         return
     if not url.startswith('http://') and not url.startswith('ftp://'):
