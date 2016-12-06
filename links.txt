@@ -1,8 +1,0 @@
-http://www.gongsibao.com/statics/css/style.css?20150723
-http://www.gongsibao.com/statics/css/plugin.css?20150723
-http://www.gongsibao.com/statics/js/home/html5shiv.min.js
-http://www.gongsibao.com/statics/js/home/jquery.min.js?20150723
-http://www.gongsibao.com/statics/js/home/plugin.js?20150723
-http://www.gongsibao.com/static/js/home/common.js?20150723
-http://www.gongsibao.com/statics/js/home/user.js?20150723
-
