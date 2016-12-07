@@ -7,7 +7,7 @@ import urllib
 import urlparse
 from htmllib import HTMLParser
 
-def get_htmlsource(url):
+def get_urls(url):
     data = urllib.urlopen(url).read()
     parser = HTMLParser(formatter.AbstractFormatter(formatter.DumbWriter(cStringIO.StringIO())))
     parser.feed(data)
@@ -16,7 +16,7 @@ def get_htmlsource(url):
     return url_list
 
 def main():
-    url_list=get_htmlsource("http://www.gongsibao.com")
+    url_list=get_urls("http://www.gongsibao.com")
     url_list.sort()
     #method 1
     #url_update=list(set(url_list))#排重
