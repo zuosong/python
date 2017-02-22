@@ -116,7 +116,7 @@ def login_page(obj):
     user.send_keys("18618447700")
     password = browser.find_element_by_xpath("//input[@name='password']")
     password.clear()
-    password.send_keys("admin111")
+    password.send_keys("QWERTY")
     time.sleep(1)
     form = browser.find_element_by_name("dosubmit")
     form.submit()
