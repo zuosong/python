@@ -3,6 +3,8 @@
 #date 2016-12-7
 #author zuosong
 #fixed point :move the code into functions
+#date:2017-2-22
+#只获取页面链接地址
 import cStringIO
 import formatter
 import urllib

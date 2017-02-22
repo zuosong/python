@@ -1,3 +1,5 @@
+#date:2017-2-22
+#页面爬取脚本
 #!/usr/bin/env python
 """From computer in company"""
 import cStringIO

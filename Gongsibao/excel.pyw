@@ -1,3 +1,5 @@
+#date:2017-2-22
+#Windows系统下excel文件的读写操作 
 #!/usr/bin/env python
 """
 利用win32com.client对Excel文件进行写操作

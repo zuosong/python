@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#data:2017-2-22
+#脚本：测试页面加载时间
 from selenium import webdriver
 import time
 browser = webdriver.Chrome(executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")

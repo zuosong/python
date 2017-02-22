@@ -1,3 +1,7 @@
+#date:2017-2-22
+#根据cookie判断是否登录成功
+
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #encoding=utf-8

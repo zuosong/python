@@ -1,3 +1,5 @@
+#date:2017-2-22
+#发送邮件脚本
 # -*- coding: utf-8 -*-
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
