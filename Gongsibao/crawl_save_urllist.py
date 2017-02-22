@@ -9,18 +9,16 @@ import urllib
 import urlparse
 from htmllib import HTMLParser
 
-def get_urls(url='http://www.gongsibao.com'):
+def get_urls(url):
     data = urllib.urlopen(url).read()
     parser = HTMLParser(formatter.AbstractFormatter(formatter.DumbWriter(cStringIO.StringIO())))
     parser.feed(data)
     parser.close()
     url_list= parser.anchorlist
-    print 'get_urls is running~~'
     return url_list
 
-def url_filter(url='http://www.gongsibao.com'):
-    print 'url_filter is running~~'
-    url_list=get_urls('http://www.gongsibao.com')
+def url_filter(url):
+    url_list=get_urls(url)
     url_list=list(set(url_list))#排重
     url_list.sort()#进行一次排序
     url_update = []
@@ -52,8 +50,13 @@ def output_urllist(file='E:\\Private Doc\\files\\test.txt',url_list=[]):
     fl.close()
 
 def main():
-    url_list=url_filter('http://www.gongsibao.com/')
-    print 'Running~~~~'
+    #url_list=url_filter('http://www.gongsibao.com/')
+    url_list = ['http://www.gongsibao.com/ask_149/8.html',]
+    for url in url_list:
+        url_new_list = []
+        url_new_list = url_filter(url)
+        url_list.extend(url_new_list)
+        url_list=list(set(url_list))#排重
     output_urllist('E:\\Private Doc\\files\\test.txt',url_list)
 
 if __name__ =='__main__':
