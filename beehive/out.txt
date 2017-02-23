@@ -2,5 +2,7 @@ The url http://www.gongsibao.com/product_187/1.html
 retrun Error code: 404
 The url http://www.gongsibao.com/zt/project/microFinance/index.html
 retrun Error code: 404
+The url http://www.gongsibao.com/item/47.html?catid=206
+retrun Error code: 500
 The url http://www.gongsibao.com/item/1097.html?catid=432
 retrun Error code: 500

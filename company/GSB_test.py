@@ -138,10 +138,11 @@ def get_page_performance(obj):
     time2 = browser.execute_script("""return window.performance.timing.loadEventEnd;""")
     return time2 - time1
 
-def get_url_list(file=file_excel,by_name=u'Sheet1',col_num=6):
+#fixed point:不根据sheet名称查找，根据序号进行查找
+def get_url_list(file=file_excel, by_index=0, col_num=6):
     try:
         data = xlrd.open_workbook(file)
-        table = data.sheet_by_name(by_name)
+        table = data.sheets()[by_index]
         nrows = table.nrows
         ncols = table.ncols
         list = []
@@ -195,14 +196,12 @@ def send_mail2(From,To,file_name,server,account,passwd):
 
 #The main function
 def main():
-    dict_performance={}
-    dict_httpcode={}
-    url_list = get_url_list(file_excel,u'Sheet1',6)
     #xls文件读写：方法1
     #xls = rwExcel(r'E:\Private Doc\\files\\file.xlsx')
     #xls文件读写：方法2
     rb = open_workbook(file_excel, formatting_info=True )
     sheet_count = len(rb.sheets())#获取当前工作簿中的sheet数量
+    url_list = get_url_list(file_excel,0,6)
     r_sheet = rb.sheet_by_index(0)
     wb = copy(rb)
     w_sheet = wb.get_sheet(0)
@@ -241,6 +240,57 @@ def main():
                 time.sleep(1)
                 close_browser(browser)
                 response.close()
+    #对第二个sheet进行操作
+    url_list = get_url_list(file_excel,1,5)
+    r_sheet = rb.sheet_by_index(1)
+    wb = copy(rb)
+    w_sheet = wb.get_sheet(1)
+    for i in range(len(url_list)):
+        response = None
+        #xls.setCell('sheet1',2+i,'A',url_list[i])
+        try:
+            response = urllib2.urlopen(url_list[i],timeout=5)
+        except urllib2.URLError as e:
+            if hasattr(e, 'code'):
+                w_sheet.write(2+i, 2, e.code)
+            elif hasattr(e, 'reason'):
+                w_sheet.write(2+i, 2, e.reason)
+        finally:
+            if response:
+                w_sheet.write(2+i, 2, response.getcode())
+                browser=load_page(url_list[i])
+                loadtime=get_page_performance(browser)
+                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
+                w_sheet.write(2+i, 4, loadtime)
+                time.sleep(1)
+                close_browser(browser)
+                response.close()
+    #对第三个sheet进行操作
+    url_list = get_url_list(file_excel,2,5)
+    r_sheet = rb.sheet_by_index(2)
+    wb = copy(rb)
+    w_sheet = wb.get_sheet(2)
+    for i in range(len(url_list)):
+        response = None
+        #xls.setCell('sheet1',2+i,'A',url_list[i])
+        try:
+            response = urllib2.urlopen(url_list[i],timeout=5)
+        except urllib2.URLError as e:
+            if hasattr(e, 'code'):
+                w_sheet.write(2+i, 7, e.code)
+            elif hasattr(e, 'reason'):
+                w_sheet.write(2+i, 7, e.reason)
+        finally:
+            if response:
+                w_sheet.write(2+i, 7, response.getcode())
+                browser=load_page(url_list[i])
+                loadtime=get_page_performance(browser)
+                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
+                w_sheet.write(2+i, 6, loadtime)
+                time.sleep(1)
+                close_browser(browser)
+                response.close()
+
     #xls.save()
     #xls.close()
     wb.save("E:\\Private Doc\\files\\file.xls")
