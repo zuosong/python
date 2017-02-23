@@ -21,7 +21,7 @@ malinfo_index = 3
 file_path = "E:\\Private Doc\\files\\test.xls"
 #formatting_info = True 保存之前数据的格式
 rb = open_workbook(file_path, formatting_info=True)
-r_sheet = rb.sheet_by_index(0) #read onlu copy to introspect the file
+r_sheet = rb.sheet_by_index(0) #read only copy to introspect the file
 wb = copy(rb)# a writable copy(I can't read values out of this , only write to it)
 w_sheet = wb.get_sheet(0)# the sheet to write to within the writable copy
 malurl = '''http://www.gongsibao.com/1r'''

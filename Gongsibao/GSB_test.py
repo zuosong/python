@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #encoding=utf-8
-#modified date:2017-2-2
+#modified date:2017-2-22
 #fixed point:1.在同一个文件内读写操作。读取页面URL地址,将结果写入另一列
-#            2.重新写类rwExcel,支持在Linux系统中对xlsx文件进行读写操作
+#modified date:2017-2-23
+#fixed point:1.为兼容不同操作系统，使用xlutils,xlrd,xlwt进行文件读写操作。
+
 #发送带附件的邮件使用的module
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
@@ -14,21 +16,29 @@ import mimetypes
 import os.path
 import time
 import sys,xdrlib
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import urllib2
 import xlrd
+#表格的读写操作库 2017-2-23 zs
+from xlutils.copy import copy
+from xlrd import open_workbook
+from xlwt import easyxf
+#windows系统下表格文件的读写库
 import win32com.client
 from win32com.client import Dispatch
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
 #set the the path of chromedriver.exe
 chrome_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 #数据文件存储名称及路径
-file_excel='E:\Private Doc\\files\\file.xlsx'
+file_excel='E:\Private Doc\\files\\file.xls'
 row_start=2#url地址从第2行开始
-row_end=27#url地址在第17行结束
+row_end=57#url地址在第17行结束
 send_account = "zu.so@163.com"
 receive_account = "zuosong_0@163.com"
 #Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
@@ -76,8 +86,12 @@ class rwExcel():
 #input:url,return:browser object
 def load_page(url):
     browser = webdriver.Chrome(executable_path=chrome_path) # Get local session of Chrome
+    browser.set_page_load_timeout(15)#设置页面加载时间15s
     loadpage=url
-    browser.get(loadpage) # Load page
+    try:
+        browser.get(loadpage) # Load page
+    except TimeoutException:
+        browser.execute_script('window.stop()')
     return browser
 
 #Find the login button ,enter the account and password to login The website
@@ -184,7 +198,14 @@ def main():
     dict_performance={}
     dict_httpcode={}
     url_list = get_url_list(file_excel,u'Sheet1',6)
-    xls = rwExcel(r'E:\Private Doc\\files\\file.xlsx')
+    #xls文件读写：方法1
+    #xls = rwExcel(r'E:\Private Doc\\files\\file.xlsx')
+    #xls文件读写：方法2
+    rb = open_workbook(file_excel, formatting_info=True )
+    sheet_count = len(rb.sheets())#获取当前工作簿中的sheet数量
+    r_sheet = rb.sheet_by_index(0)
+    wb = copy(rb)
+    w_sheet = wb.get_sheet(0)
     for i in range(len(url_list)):
         response = None
         #xls.setCell('sheet1',2+i,'A',url_list[i])
@@ -194,15 +215,18 @@ def main():
             if hasattr(e, 'code'):
                 #print 'Error code:',e.code
                 #dict_httpcode[url_list[i]]=e.code
-                xls.setCell('sheet1',3+i,'C',e.code)
+                #xls.setCell('sheet1',3+i,'C',e.code)#设置每个单元格数据方法1
+                w_sheet.write(2+i, 2, e.code)
             elif hasattr(e, 'reason'):
                 #print 'Reason:',e.reason
                 #dict_httpcode[url_list[i]]=e.reason
-                xls.setCell('sheet1',3+i,'C',e.reason)
+                #xls.setCell('sheet1',3+i,'C',e.reason)#设置每个单元格数据方法1
+                w_sheet.write(2+i, 2, e.reason)
         finally:
             if response:
                 #dict_httpcode[url_list[i]]=response.getcode()
-                xls.setCell('sheet1',3+i,'C',response.getcode())
+                #xls.setCell('sheet1',3+i,'C',response.getcode())#设置每个单元格数据方法1
+                w_sheet.write(2+i, 2, response.getcode())
                 browser=load_page(url_list[i])
                 #if check_cookies(browser):
                     #login_gsb(browser,"qwrr","qqqqqqqq")
@@ -210,15 +234,17 @@ def main():
                 #passwd=raw_input("Please enter your password: ")
                 #
                 loadtime=get_page_performance(browser)
-                xls.setCell('sheet1',3+i,'F',loadtime)
+                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
+                w_sheet.write(2+i, 5, loadtime)
                 #print "The loadtime of the page is: %d ms " %loadtime
                 #dict_performance[url_list[i]]=loadtime
                 time.sleep(1)
                 close_browser(browser)
                 response.close()
-    xls.save()
-    xls.close()
-    #暂时屏蔽掉邮件发送功能 date 2017-2-2 zs
+    #xls.save()
+    #xls.close()
+    wb.save("E:\\Private Doc\\files\\file.xls")
+    #暂时屏蔽掉邮件发送功能 date 2017-2-22 zs
     #send_mail2(send_account,receive_account,Excel_name,smtp_server,account,passwd)
 
 if __name__=="__main__":

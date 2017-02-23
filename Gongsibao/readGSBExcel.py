@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-#modified date : 2017-2-2
+#modified date : 2017-2-22
 
 import xdrlib,sys
 import xlrd
