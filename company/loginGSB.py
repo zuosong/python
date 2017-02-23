@@ -1,3 +1,5 @@
+#date:2017-2-22
+#进行登录操作
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #encoding=utf-8

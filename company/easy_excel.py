@@ -1,3 +1,5 @@
+#date:2017-2-22
+#Windows系统下excel文件的读写操作 及设置复杂的文件格式
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from win32com.client import Dispatch

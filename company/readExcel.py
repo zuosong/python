@@ -1,3 +1,5 @@
+#date:2017-2-22
+#è„šæœ¬ï¼šä½¿ç”¨xlrdä¸¤ç§è¯»å–Excelæ–‡ä»¶çš„æ–¹å¼
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 import xdrlib,sys
@@ -8,7 +10,7 @@ def open_excel(file='file.xlsx'):
         return data
     except Exception,e:
         print str(e)
-#¸ù¾İË÷Òı»ñÈ¡Excel±í¸ñÖĞµÄÊı¾İ£¬²ÎÊı£ºfile£ºexcel¼şÂ·¾¶£¬colnameindex:±íÍ·ÁĞÃûËùÔÚĞĞµÄË÷Òı£¬by_index:±íµÄË÷Òı
+#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡Excelï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fileï¿½ï¿½excelï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½colnameindex:ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½by_index:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 def excel_table_byindex(file = 'file.xlsx',colnameindex=0,by_index=1):
     data = open_excel(file)
     table = data.sheets()[by_index]
@@ -25,7 +27,7 @@ def excel_table_byindex(file = 'file.xlsx',colnameindex=0,by_index=1):
             list.append(app)
     return list
 
-#¸ù¾İÃû³Æ»ñÈ¡Excel±í¸ñÖĞµÄÊı¾İ£¬²ÎÊı£ºfile:ExcelÂ·¾¶£¬colnameindex±íÍ·ÁĞÃûËùÔÚĞĞµÄË÷Òı£¬by_name:sheet1Ãû³Æ
+#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½È¡Excelï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½file:ExcelÂ·ï¿½ï¿½ï¿½ï¿½colnameindexï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½by_name:sheet1ï¿½ï¿½ï¿½ï¿½
 def excel_table_byname(file='file.xlsx',colnameindex=0,by_name=u'Sheet2'):
     data = open_excel(file)
     table = data.sheet_by_name(by_name)
