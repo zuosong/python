@@ -240,7 +240,9 @@ def main():
                 time.sleep(1)
                 close_browser(browser)
                 response.close()
+    wb.save("E:\\Private Doc\\files\\file.xls")
     #对第二个sheet进行操作
+    rb = open_workbook(file_excel, formatting_info=True )
     url_list = get_url_list(file_excel,1,5)
     r_sheet = rb.sheet_by_index(1)
     wb = copy(rb)
@@ -265,7 +267,9 @@ def main():
                 time.sleep(1)
                 close_browser(browser)
                 response.close()
+    wb.save("E:\\Private Doc\\files\\file.xls")
     #对第三个sheet进行操作
+    rb = open_workbook(file_excel, formatting_info=True )
     url_list = get_url_list(file_excel,2,5)
     r_sheet = rb.sheet_by_index(2)
     wb = copy(rb)
