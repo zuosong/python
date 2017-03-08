@@ -5,7 +5,11 @@
 #fixed point:1.在同一个文件内读写操作。读取页面URL地址,将结果写入另一列
 #modified date:2017-2-23
 #fixed point:1.为兼容不同操作系统，使用xlutils,xlrd,xlwt进行文件读写操作。
-
+#fixed point:1.将状态码为非200的页面URL地址输出到一个txt文档中
+#            2.判断页面加载完成与否
+#modified date:2017-3-1
+#fixed point: 1.修改判断状态码的函数getStatusCode;2.增加一个判断页面是否加载完的函数load_page_done;
+#             3.优化写入sheet表中的判断
 #发送带附件的邮件使用的module
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
@@ -19,6 +23,7 @@ import sys,xdrlib
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import urllib2
+import requests #获取页面状态码
 import xlrd
 #表格的读写操作库 2017-2-23 zs
 from xlutils.copy import copy
@@ -37,6 +42,7 @@ from selenium.webdriver.common.keys import Keys
 chrome_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 #数据文件存储名称及路径
 file_excel='E:\Private Doc\\files\\file.xls'
+error_log = 'E:\Private Doc\\files\\error.txt'
 row_start=2#url地址从第2行开始
 row_end=57#url地址在第17行结束
 send_account = "zu.so@163.com"
@@ -86,7 +92,7 @@ class rwExcel():
 #input:url,return:browser object
 def load_page(url):
     browser = webdriver.Chrome(executable_path=chrome_path) # Get local session of Chrome
-    browser.set_page_load_timeout(15)#设置页面加载时间15s
+    browser.set_page_load_timeout(20)#设置页面加载时间15s
     loadpage=url
     try:
         browser.get(loadpage) # Load page
@@ -137,6 +143,10 @@ def get_page_performance(obj):
     time1 = browser.execute_script("""return window.performance.timing.navigationStart;""")
     time2 = browser.execute_script("""return window.performance.timing.loadEventEnd;""")
     return time2 - time1
+
+def load_page_done(obj):
+    browser = obj
+    return browser.execute_script("return document.readyState;")=="complete"
 
 #fixed point:不根据sheet名称查找，根据序号进行查找
 def get_url_list(file=file_excel, by_index=0, col_num=6):
@@ -193,12 +203,18 @@ def send_mail2(From,To,file_name,server,account,passwd):
     finally:
         server.quit()
 
+#使用requests获取页面状态码
+def getStatusCode(url):
+    r = requests.get(url, allow_redirects = False)
+    return r.status_code
 
 #The main function
 def main():
     #xls文件读写：方法1
     #xls = rwExcel(r'E:\Private Doc\\files\\file.xlsx')
     #xls文件读写：方法2
+    url_error = []
+    fl = open(error_log, 'w')
     rb = open_workbook(file_excel, formatting_info=True )
     sheet_count = len(rb.sheets())#获取当前工作簿中的sheet数量
     url_list = get_url_list(file_excel,0,6)
@@ -206,40 +222,18 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(0)
     for i in range(len(url_list)):
-        response = None
-        #xls.setCell('sheet1',2+i,'A',url_list[i])
-        try:
-            response = urllib2.urlopen(url_list[i],timeout=5)
-        except urllib2.URLError as e:
-            if hasattr(e, 'code'):
-                #print 'Error code:',e.code
-                #dict_httpcode[url_list[i]]=e.code
-                #xls.setCell('sheet1',3+i,'C',e.code)#设置每个单元格数据方法1
-                w_sheet.write(2+i, 2, e.code)
-            elif hasattr(e, 'reason'):
-                #print 'Reason:',e.reason
-                #dict_httpcode[url_list[i]]=e.reason
-                #xls.setCell('sheet1',3+i,'C',e.reason)#设置每个单元格数据方法1
-                w_sheet.write(2+i, 2, e.reason)
-        finally:
-            if response:
-                #dict_httpcode[url_list[i]]=response.getcode()
-                #xls.setCell('sheet1',3+i,'C',response.getcode())#设置每个单元格数据方法1
-                w_sheet.write(2+i, 2, response.getcode())
-                browser=load_page(url_list[i])
-                #if check_cookies(browser):
-                    #login_gsb(browser,"qwrr","qqqqqqqq")
-                #account=raw_input("Please enter your phone number: ")
-                #passwd=raw_input("Please enter your password: ")
-                #
-                loadtime=get_page_performance(browser)
-                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
+        code = getStatusCode(url_list[i])
+        if code >= 400 :
+            url_error.append(url_list[i])
+        else:
+            browser = load_page(url_list[i])
+            if (load_page_done(browser)):
+                #print "OK"
+                loadtime = get_page_performance(browser)
                 w_sheet.write(2+i, 5, loadtime)
-                #print "The loadtime of the page is: %d ms " %loadtime
-                #dict_performance[url_list[i]]=loadtime
-                time.sleep(1)
-                close_browser(browser)
-                response.close()
+            close_browser(browser)
+        w_sheet.write(2+i, 2, code)
+
     wb.save("E:\\Private Doc\\files\\file.xls")
     #对第二个sheet进行操作
     rb = open_workbook(file_excel, formatting_info=True )
@@ -248,25 +242,15 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(1)
     for i in range(len(url_list)):
-        response = None
-        #xls.setCell('sheet1',2+i,'A',url_list[i])
-        try:
-            response = urllib2.urlopen(url_list[i],timeout=5)
-        except urllib2.URLError as e:
-            if hasattr(e, 'code'):
-                w_sheet.write(2+i, 2, e.code)
-            elif hasattr(e, 'reason'):
-                w_sheet.write(2+i, 2, e.reason)
-        finally:
-            if response:
-                w_sheet.write(2+i, 2, response.getcode())
-                browser=load_page(url_list[i])
-                loadtime=get_page_performance(browser)
-                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
-                w_sheet.write(2+i, 4, loadtime)
-                time.sleep(1)
-                close_browser(browser)
-                response.close()
+        code = getStatusCode(url_list[i])
+        if code >= 400 :
+            url_error.append(url_list[i])
+        else:
+            browser = load_page(url_list[i])
+            loadtime = get_page_performance(browser)
+            w_sheet.write(2+i, 4, loadtime)
+            close_browser(browser)
+        w_sheet.write(2+i, 2, code)
     wb.save("E:\\Private Doc\\files\\file.xls")
     #对第三个sheet进行操作
     rb = open_workbook(file_excel, formatting_info=True )
@@ -275,31 +259,21 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(2)
     for i in range(len(url_list)):
-        response = None
-        #xls.setCell('sheet1',2+i,'A',url_list[i])
-        try:
-            response = urllib2.urlopen(url_list[i],timeout=5)
-        except urllib2.URLError as e:
-            if hasattr(e, 'code'):
-                w_sheet.write(2+i, 7, e.code)
-            elif hasattr(e, 'reason'):
-                w_sheet.write(2+i, 7, e.reason)
-        finally:
-            if response:
-                w_sheet.write(2+i, 7, response.getcode())
-                browser=load_page(url_list[i])
-                loadtime=get_page_performance(browser)
-                #xls.setCell('sheet1',3+i,'F',loadtime)#设置每个单元格数据方法1
-                w_sheet.write(2+i, 6, loadtime)
-                time.sleep(1)
-                close_browser(browser)
-                response.close()
+        code = getStatusCode(url_list[i])
+        if code >= 400 :
+            url_error.append(url_list[i])
+        else:
+            browser = load_page(url_list[i])
 
-    #xls.save()
-    #xls.close()
+            loadtime = get_page_performance(browser)
+            w_sheet.write(2+i, 6, loadtime)
+            close_browser(browser)
+        w_sheet.write(2+i, 7, code)
     wb.save("E:\\Private Doc\\files\\file.xls")
-    #暂时屏蔽掉邮件发送功能 date 2017-2-22 zs
-    #send_mail2(send_account,receive_account,Excel_name,smtp_server,account,passwd)
+    for i in url_error:
+        fl.write(i)
+        fl.write('\n')
+    fl.close()
 
 if __name__=="__main__":
     main()
