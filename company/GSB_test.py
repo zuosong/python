@@ -11,6 +11,10 @@
 #fixed point: 1.修改判断状态码的函数getStatusCode;2.增加一个判断页面是否加载完的函数load_page_done;
 #             3.优化写入sheet表中的判断
 #发送带附件的邮件使用的module
+#modified date:2017-3-13
+#fixed point:尝试将对浏览器操作的函数改写成一个class
+#modified date:2017-3-14
+#fixed point: 将读取Excel的三个代码模块放到一个里边去
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
 import email.MIMEText# import MIMEText
@@ -52,7 +56,7 @@ smtp_server="smtp.163.com"
 account="zu.so"
 passwd="xxxxxx"
 
-class rwExcel():
+class RwExcel():
       """A utility to make it easier to get at Excel.    Remembering
       to save the data is your problem, as is    error handling.
       Operates on one workbook at a time."""
@@ -86,67 +90,70 @@ class rwExcel():
           sht = self.xlBook.Worksheets(sheet)
           sht.Cells(row, col).Value = value
 
-
+class BrowserOperation():
+    """ BrowserOperation class"""
+    def __init__(self,url, login_name, passwd , filename):
+        self.browser = webdriver.Chrome(executable_path=chrome_path)
+        self.browser.set_page_load_timeout(20)#设置页面加载时间15s
+        self.url = url
+        self.login_name = login_name
+        self.passwd = passwd
+        self.filename = filename
 
 #Use the webdriver to load the page
 #input:url,return:browser object
-def load_page(url):
-    browser = webdriver.Chrome(executable_path=chrome_path) # Get local session of Chrome
-    browser.set_page_load_timeout(20)#设置页面加载时间15s
-    loadpage=url
-    try:
-        browser.get(loadpage) # Load page
-    except TimeoutException:
-        browser.execute_script('window.stop()')
-    return browser
+    def load_page(self):
+        try:
+            self.browser.get(self.url)
+        except TimeoutException:
+            self.browser.execute_script('window.stop()')
 
 #Find the login button ,enter the account and password to login The website
 #Input:the browser,the user account,password;
-def login_gsb(obj,account,passwd):
-    browser=obj
-    browser.find_element_by_link_text("登录").click()
-    time.sleep(2)
-    user = browser.find_element_by_xpath("//input[@name='username']")
-    user.clear()
-    user.send_keys(account)
-    password = browser.find_element_by_xpath("//input[@name='password']")
-    password.clear()
-    password.send_keys(passwd)
-    time.sleep(1)
-    form = browser.find_element_by_name("dosubmit")
-    form.submit()
+    def login_gsb(self):
+        self.browser.find_element_by_link_text("登录").click()
+        time.sleep(2)
+        user = self.browser.find_element_by_xpath("//input[@name='username']")
+        user.clear()
+        user.send_keys(self.login_name)
+        password = self.browser.find_element_by_xpath("//input[@name='password']")
+        password.clear()
+        password.send_keys(self.passwd)
+        time.sleep(1)
+        form = self.browser.find_element_by_name("dosubmit")
+        form.submit()
 
 #Check the cookie COOKIE_ACCOUNT_LOGIN_TICKET to confirm if login success
 #input browser object;return boolean value:if login success return true
-def check_cookies(obj):
-    browser = obj
-    rtn_log_cookie = "return document.cookie.includes('COOKIE_ACCOUNT_LOGIN_TICKET');"
-    if_log = browser.execute_script(rtn_log_cookie)
-    return if_log
+    def check_cookies(self):
+        rtn_log_cookie = "return document.cookie.includes('COOKIE_ACCOUNT_LOGIN_TICKET');"
+        if_log = self.browser.execute_script(rtn_log_cookie)
+        return if_log
 
 #close  the browser
-def close_browser(obj):
-    browser = obj
-    browser.close()
+    def close_browser(self):
+        self.browser.close()
 
 #capture the picture of the page now displaying
 #input:browser,the name of pic
-def capture_pic(obj,save_fn = "capture.png"):
-    browser = obj
-    save_pic = save_fn
-    browser.save_screenshot(save_pic)
+    def capture_pic(self):
+        self.browser.save_screenshot(self.filename)
 
 #get the performance the page loading
 #input:browser,return:load time(ms)
-def get_page_performance(obj):
-    browser = obj
-    time1 = browser.execute_script("""return window.performance.timing.navigationStart;""")
-    time2 = browser.execute_script("""return window.performance.timing.loadEventEnd;""")
-    return time2 - time1
+    def get_page_performance(self):
+        time1 = self.browser.execute_script("""return window.performance.timing.navigationStart;""")
+        time2 = self.browser.execute_script("""return window.performance.timing.loadEventEnd;""")
+        return time2 - time1
 
-def load_page_done(obj):
-    browser = obj
-    return browser.execute_script("return document.readyState;")=="complete"
+#判断是否加载页面完成
+    def load_page_done(self):
+        return self.browser.execute_script("return document.readyState;")=="complete"
+
+#使用requests获取页面状态码
+    def getStatusCode(self):
+        r = requests.get(self.url, allow_redirects = False)
+        return r.status_code
 
 #fixed point:不根据sheet名称查找，根据序号进行查找
 def get_url_list(file=file_excel, by_index=0, col_num=6):
@@ -168,9 +175,7 @@ def send_mail2(From,To,file_name,server,account,passwd):
     # 构造MIMEText对象做为邮件显示内容并附加到根容器
     text_msg = email.MIMEText.MIMEText("This is a test text to text mime",_charset="utf-8")
     main_msg.attach(text_msg)
-
     # 构造MIMEBase对象做为文件附件内容并附加到根容器
-
     ## 读入文件内容并格式化 [方式1]－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
     data = open(file_name, 'rb')
     ctype,encoding = mimetypes.guess_type(file_name)
@@ -203,15 +208,10 @@ def send_mail2(From,To,file_name,server,account,passwd):
     finally:
         server.quit()
 
-#使用requests获取页面状态码
-def getStatusCode(url):
-    r = requests.get(url, allow_redirects = False)
-    return r.status_code
-
 #The main function
 def main():
     #xls文件读写：方法1
-    #xls = rwExcel(r'E:\Private Doc\\files\\file.xlsx')
+    #xls = RwExcel(r'E:\Private Doc\\files\\file.xlsx')
     #xls文件读写：方法2
     url_error = []
     fl = open(error_log, 'w')
@@ -222,16 +222,17 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(0)
     for i in range(len(url_list)):
-        code = getStatusCode(url_list[i])
+        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
+        code = browser.getStatusCode()
         if code >= 400 :
             url_error.append(url_list[i])
         else:
-            browser = load_page(url_list[i])
-            if (load_page_done(browser)):
+            browser.load_page()
+            if (browser.load_page_done()):
                 #print "OK"
-                loadtime = get_page_performance(browser)
+                loadtime = browser.get_page_performance()
                 w_sheet.write(2+i, 5, loadtime)
-            close_browser(browser)
+            browser.close_browser()
         w_sheet.write(2+i, 2, code)
 
     wb.save("E:\\Private Doc\\files\\file.xls")
@@ -242,14 +243,15 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(1)
     for i in range(len(url_list)):
-        code = getStatusCode(url_list[i])
+        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
+        code = browser.getStatusCode()
         if code >= 400 :
             url_error.append(url_list[i])
         else:
-            browser = load_page(url_list[i])
-            loadtime = get_page_performance(browser)
+            browser.load_page()
+            loadtime = browser.get_page_performance()
             w_sheet.write(2+i, 4, loadtime)
-            close_browser(browser)
+            browser.close_browser()
         w_sheet.write(2+i, 2, code)
     wb.save("E:\\Private Doc\\files\\file.xls")
     #对第三个sheet进行操作
@@ -259,15 +261,15 @@ def main():
     wb = copy(rb)
     w_sheet = wb.get_sheet(2)
     for i in range(len(url_list)):
-        code = getStatusCode(url_list[i])
+        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
+        code = browser.getStatusCode()
         if code >= 400 :
             url_error.append(url_list[i])
         else:
-            browser = load_page(url_list[i])
-
-            loadtime = get_page_performance(browser)
+            browser.load_page()
+            loadtime = browser.get_page_performance()
             w_sheet.write(2+i, 6, loadtime)
-            close_browser(browser)
+            browser.close_browser()
         w_sheet.write(2+i, 7, code)
     wb.save("E:\\Private Doc\\files\\file.xls")
     for i in url_error:
