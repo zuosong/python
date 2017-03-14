@@ -14,7 +14,8 @@
 #modified date:2017-3-13
 #fixed point:尝试将对浏览器操作的函数改写成一个class
 #modified date:2017-3-14
-#fixed point: 将读取Excel的三个代码模块放到一个里边去
+#fixed point: 1.将读取Excel的三个代码模块放到一个里边去
+#             2.将getStatusCode从class中移出去
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
 import email.MIMEText# import MIMEText
@@ -55,40 +56,6 @@ receive_account = "zuosong_0@163.com"
 smtp_server="smtp.163.com"
 account="zu.so"
 passwd="xxxxxx"
-
-class RwExcel():
-      """A utility to make it easier to get at Excel.    Remembering
-      to save the data is your problem, as is    error handling.
-      Operates on one workbook at a time."""
-      def __init__(self, filename=None):  #打开文件或者新建文件（如果不存在的话）
-          self.xlApp = win32com.client.Dispatch('Excel.Application')
-          if filename:
-              self.filename = filename
-              self.xlBook = self.xlApp.Workbooks.Open(filename)
-          else:
-              self.xlBook = self.xlApp.Workbooks.Add()
-              self.filename = ''
-
-      def save(self, newfilename=None):  #保存文件
-          if newfilename:
-              self.filename = newfilename
-              self.xlBook.SaveAs(newfilename)
-          else:
-              self.xlBook.Save()
-
-      def close(self):  #关闭文件
-          self.xlBook.Close(SaveChanges=0)
-          del self.xlApp
-
-      def getCell(self, sheet, row, col):  #获取单元格的数据
-          "Get value of one cell"
-          sht = self.xlBook.Worksheets(sheet)
-          return sht.Cells(row, col).Value
-
-      def setCell(self, sheet, row, col, value):  #设置单元格的数据
-          "set value of one cell"
-          sht = self.xlBook.Worksheets(sheet)
-          sht.Cells(row, col).Value = value
 
 class BrowserOperation():
     """ BrowserOperation class"""
@@ -151,9 +118,9 @@ class BrowserOperation():
         return self.browser.execute_script("return document.readyState;")=="complete"
 
 #使用requests获取页面状态码
-    def getStatusCode(self):
-        r = requests.get(self.url, allow_redirects = False)
-        return r.status_code
+def getStatusCode(url):
+     r = requests.get(url, allow_redirects = False)
+     return r.status_code
 
 #fixed point:不根据sheet名称查找，根据序号进行查找
 def get_url_list(file=file_excel, by_index=0, col_num=6):
@@ -210,68 +177,35 @@ def send_mail2(From,To,file_name,server,account,passwd):
 
 #The main function
 def main():
-    #xls文件读写：方法1
-    #xls = RwExcel(r'E:\Private Doc\\files\\file.xlsx')
-    #xls文件读写：方法2
     url_error = []
     fl = open(error_log, 'w')
     rb = open_workbook(file_excel, formatting_info=True )
-    sheet_count = len(rb.sheets())#获取当前工作簿中的sheet数量
-    url_list = get_url_list(file_excel,0,6)
-    r_sheet = rb.sheet_by_index(0)
-    wb = copy(rb)
-    w_sheet = wb.get_sheet(0)
-    for i in range(len(url_list)):
-        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
-        code = browser.getStatusCode()
-        if code >= 400 :
-            url_error.append(url_list[i])
-        else:
-            browser.load_page()
-            if (browser.load_page_done()):
-                #print "OK"
+    for sheet in range(len(rb.sheets())):
+        colx = [6, 5, 5]
+        printx = [5, 4, 6]
+        timex = [2, 2, 7]
+        url_list = get_url_list(file_excel,sheet,colx[sheet])
+        r_sheet = rb.sheet_by_index(sheet)
+        wb = copy(rb)
+        w_sheet = wb.get_sheet(sheet)
+        for i in range(len(url_list)):
+            code = getStatusCode(url_list[i])
+            w_sheet.write(2+i, timex[sheet], code)
+            print url_list[i],
+            if code >= 400:
+                url_error.append(url_list[i])
+            else:
+                browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
+                while (browser.load_page_done() != 1):
+                    time.sleep(20)
+                browser.load_page()
                 loadtime = browser.get_page_performance()
-                w_sheet.write(2+i, 5, loadtime)
-            browser.close_browser()
-        w_sheet.write(2+i, 2, code)
+                w_sheet.write(2+i, printx[sheet], loadtime)
+                print "%d ms."  %loadtime
+                browser.close_browser()
+        wb.save("E:\\Private Doc\\files\\file.xls")
+        rb = open_workbook(file_excel, formatting_info=True )
 
-    wb.save("E:\\Private Doc\\files\\file.xls")
-    #对第二个sheet进行操作
-    rb = open_workbook(file_excel, formatting_info=True )
-    url_list = get_url_list(file_excel,1,5)
-    r_sheet = rb.sheet_by_index(1)
-    wb = copy(rb)
-    w_sheet = wb.get_sheet(1)
-    for i in range(len(url_list)):
-        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
-        code = browser.getStatusCode()
-        if code >= 400 :
-            url_error.append(url_list[i])
-        else:
-            browser.load_page()
-            loadtime = browser.get_page_performance()
-            w_sheet.write(2+i, 4, loadtime)
-            browser.close_browser()
-        w_sheet.write(2+i, 2, code)
-    wb.save("E:\\Private Doc\\files\\file.xls")
-    #对第三个sheet进行操作
-    rb = open_workbook(file_excel, formatting_info=True )
-    url_list = get_url_list(file_excel,2,5)
-    r_sheet = rb.sheet_by_index(2)
-    wb = copy(rb)
-    w_sheet = wb.get_sheet(2)
-    for i in range(len(url_list)):
-        browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
-        code = browser.getStatusCode()
-        if code >= 400 :
-            url_error.append(url_list[i])
-        else:
-            browser.load_page()
-            loadtime = browser.get_page_performance()
-            w_sheet.write(2+i, 6, loadtime)
-            browser.close_browser()
-        w_sheet.write(2+i, 7, code)
-    wb.save("E:\\Private Doc\\files\\file.xls")
     for i in url_error:
         fl.write(i)
         fl.write('\n')
