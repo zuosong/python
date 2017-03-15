@@ -61,7 +61,7 @@ class BrowserOperation():
     """ BrowserOperation class"""
     def __init__(self,url, login_name, passwd , filename):
         self.browser = webdriver.Chrome(executable_path=chrome_path)
-        self.browser.set_page_load_timeout(20)#设置页面加载时间15s
+        self.browser.set_page_load_timeout(200)#设置页面加载时间200s
         self.url = url
         self.login_name = login_name
         self.passwd = passwd
@@ -191,17 +191,19 @@ def main():
         for i in range(len(url_list)):
             code = getStatusCode(url_list[i])
             w_sheet.write(2+i, timex[sheet], code)
-            print url_list[i],
             if code >= 400:
                 url_error.append(url_list[i])
             else:
                 browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
                 while (browser.load_page_done() != 1):
-                    time.sleep(20)
+                    time.sleep(200)
                 browser.load_page()
                 loadtime = browser.get_page_performance()
-                w_sheet.write(2+i, printx[sheet], loadtime)
-                print "%d ms."  %loadtime
+                if (loadtime < 0 or loadtime > 20000 ):
+                    w_sheet.write(2+i, printx[sheet], "The page spent too much time loading!")
+                else:
+                    w_sheet.write(2+i, printx[sheet], loadtime)
+                print "The page %s load %d ms."  %(url_list[i],loadtime)
                 browser.close_browser()
         wb.save("E:\\Private Doc\\files\\file.xls")
         rb = open_workbook(file_excel, formatting_info=True )
