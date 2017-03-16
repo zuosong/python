@@ -16,12 +16,10 @@
 #modified date:2017-3-14
 #fixed point: 1.将读取Excel的三个代码模块放到一个里边去
 #             2.将getStatusCode从class中移出去
-import smtplib
-import email.MIMEMultipart# import MIMEMultipart
-import email.MIMEText# import MIMEText
-import email.MIMEBase# import MIMEBase
-import mimetypes
-
+#modified date:2017-3-15
+#fixed point:1.修改了读取Excel文件中的行数，去掉了额外的参数限制
+#modified date:2017-3-16
+#fixed point:将发送邮件功能模块移出，然后重新import这个模块发送邮件用
 import os.path
 import time
 import sys,xdrlib
@@ -35,27 +33,23 @@ from xlutils.copy import copy
 from xlrd import open_workbook
 from xlwt import easyxf
 #windows系统下表格文件的读写库
-import win32com.client
-from win32com.client import Dispatch
-
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-
+#使用自己构造的类来发送邮件
+from SendEmail import SendEmail
 #set the the path of chromedriver.exe
 chrome_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 #数据文件存储名称及路径
 file_excel='E:\Private Doc\\files\\file.xls'
 error_log = 'E:\Private Doc\\files\\error.txt'
 row_start=2#url地址从第2行开始
-row_end=57#url地址在第17行结束
-send_account = "zu.so@163.com"
-receive_account = "zuosong_0@163.com"
-#Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
+sender = "zu.so@163.com"
+recipients = "zuosong_0@163.com"
 smtp_server="smtp.163.com"
 account="zu.so"
-passwd="xxxxxx"
+passwd="222222"
 
 class BrowserOperation():
     """ BrowserOperation class"""
@@ -131,49 +125,9 @@ def get_url_list(file=file_excel, by_index=0, col_num=6):
         ncols = table.ncols
         list = []
         list = table.col_values(col_num)
-        return list[row_start:row_end]
+        return list[row_start:nrows]
     except Exception,e:
         print str(e)
-
-def send_mail2(From,To,file_name,server,account,passwd):
-    # 构造MIMEMultipart对象做为根容器
-    main_msg = email.MIMEMultipart.MIMEMultipart()
-
-    # 构造MIMEText对象做为邮件显示内容并附加到根容器
-    text_msg = email.MIMEText.MIMEText("This is a test text to text mime",_charset="utf-8")
-    main_msg.attach(text_msg)
-    # 构造MIMEBase对象做为文件附件内容并附加到根容器
-    ## 读入文件内容并格式化 [方式1]－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-    data = open(file_name, 'rb')
-    ctype,encoding = mimetypes.guess_type(file_name)
-    if ctype is None or encoding is not None:
-        ctype = 'application/octet-stream'
-    maintype,subtype = ctype.split('/',1)
-    file_msg = email.MIMEBase.MIMEBase(maintype, subtype)
-    file_msg.set_payload(data.read())
-    data.close()
-    email.Encoders.encode_base64(file_msg)#把附件编码
-    ## 设置附件头
-    basename = os.path.basename(file_name)
-    file_msg.add_header('Content-Disposition','attachment', filename = basename)#修改邮件头
-    main_msg.attach(file_msg)
-
-    # 设置根容器属性
-    main_msg['From'] = From
-    main_msg['To'] = To
-    main_msg['Subject'] = "attach test "
-    main_msg['Date'] = email.Utils.formatdate( )
-
-    # 得到格式化后的完整文本
-    fullText = main_msg.as_string()
-
-    server = smtplib.SMTP(smtp_server)
-    server.login(account,passwd)
-    # 用smtp发送邮件
-    try:
-        server.sendmail(From, To, fullText)
-    finally:
-        server.quit()
 
 #The main function
 def main():
@@ -194,7 +148,7 @@ def main():
             if code >= 400:
                 url_error.append(url_list[i])
             else:
-                browser = BrowserOperation(url_list[i],"18618447716", "addaf", "capture.jpg")
+                browser = BrowserOperation(url_list[i],"18618000000", "addaf", "capture.jpg")
                 while (browser.load_page_done() != 1):
                     time.sleep(200)
                 browser.load_page()
@@ -208,10 +162,18 @@ def main():
         wb.save("E:\\Private Doc\\files\\file.xls")
         rb = open_workbook(file_excel, formatting_info=True )
 
+#将url_error中的内容写入文件
     for i in url_error:
         fl.write(i)
         fl.write('\n')
     fl.close()
+    #增加一个发送邮件的模块，如果url_error为空，就将excel表格发送出去，如果不为空就将错误日志发送出去
+    if len(url_error) == 0:
+        attach = file_excel
+    else:
+        attach = error_log
+    mail = SendEmail(sender, recipients, attach, smtp_server, account, passwd)
+    mail.send_email()
 
 if __name__=="__main__":
     main()

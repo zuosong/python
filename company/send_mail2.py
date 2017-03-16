@@ -1,6 +1,7 @@
 #date:2017-2-22
-#发送邮件脚本
 # -*- coding: utf-8 -*-
+#发送邮件脚本
+
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
 import email.MIMEText# import MIMEText
@@ -12,7 +13,8 @@ receive_account = "zuosong_0@163.com"
 Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
 smtp_server="smtp.163.com"
 account="zu.so"
-passwd="qwertyui"
+passwd="#####"
+from SendEmail import SendEmail
 
 def send_mail2(From,To,file_name,server,account,passwd):
 
@@ -56,7 +58,9 @@ def send_mail2(From,To,file_name,server,account,passwd):
         server.quit()
 
 def main():
-    send_mail2(send_account,receive_account,Excel_name,smtp_server,account,passwd)
+    #send_mail2(send_account,receive_account,Excel_name,smtp_server,account,passwd)
+    mail = SendEmail(send_account,receive_account,Excel_name,smtp_server,account,passwd)
+    mail.send_email()
 
 if __name__=="__main__":
     main()
