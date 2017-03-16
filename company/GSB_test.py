@@ -49,7 +49,8 @@ sender = "zu.so@163.com"
 recipients = "zuosong_0@163.com"
 smtp_server="smtp.163.com"
 account="zu.so"
-passwd="222222"
+passwd="wqrrrt"
+subject = "官网每日测试-" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 class BrowserOperation():
     """ BrowserOperation class"""
@@ -170,9 +171,11 @@ def main():
     #增加一个发送邮件的模块，如果url_error为空，就将excel表格发送出去，如果不为空就将错误日志发送出去
     if len(url_error) == 0:
         attach = file_excel
+        body_msg = """Dear all:\n    完成对公司宝官网每日测试，测试内容为官网及SEM广告、专题页面，页面功能正常，附件为测试报告详情。"""
     else:
         attach = error_log
-    mail = SendEmail(sender, recipients, attach, smtp_server, account, passwd)
+        body_msg = "附件中的链接地址访问异常，请注意！"
+    mail = SendEmail(sender, recipients, subject,body_msg, attach, smtp_server, account, passwd)
     mail.send_email()
 
 if __name__=="__main__":

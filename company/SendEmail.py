@@ -3,6 +3,8 @@
 #encoding=utf-8
 #create date：2017-3-16
 #author：zuosong
+#modified date:2017-3-16
+#fixed point:1.发送邮件的主题和正文文本可通过参数传递，并且支持中文。
 import smtplib
 import email.MIMEMultipart# import MIMEMultipart
 import email.MIMEText# import MIMEText
@@ -12,18 +14,20 @@ import os.path
 import time
 import sys
 
-sender = "zu.so@163.com"
-recipients = "zuosong_0@163.com"
-Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
-smtp_server="smtp.163.com"
-account="zu.so"
-passwd="qeeeeer"
+#sender = "zu.so@163.com"
+#recipients = "zuosong_0@163.com"
+#Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
+#smtp_server="smtp.163.com"
+#account="zu.so"
+#passwd="qwertyu"
 
 class SendEmail():
     """A class that can send email."""
-    def __init__(self,From, To, file_name, server, account, passwd):
+    def __init__(self,From, To, subject, body_msg, file_name, server, account, passwd):
         self.sender = From
         self.recipients = To
+        self.subject = subject
+        self.body_msg = body_msg
         self.attachment = file_name
         self.server = server
         self.account = account
@@ -32,7 +36,7 @@ class SendEmail():
     def send_email(self):
         # 构造MIMEMultipart对象做为根容器
         main_msg = email.MIMEMultipart.MIMEMultipart()
-        text_msg = email.MIMEText.MIMEText("This is a test text to text mime",_charset="utf-8")
+        text_msg = email.MIMEText.MIMEText(self.body_msg, _charset="utf-8")
         main_msg.attach(text_msg)
         # 构造MIMEBase对象做为文件附件内容并附加到根容器
         ## 读入文件内容并格式化 [方式1]－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
@@ -52,7 +56,7 @@ class SendEmail():
         # 设置根容器属性
         main_msg['From'] = self.sender
         main_msg['To'] = self.recipients
-        main_msg['Subject'] = "attach test "
+        main_msg['Subject'] = self.subject
         main_msg['Date'] = email.Utils.formatdate()
         # 得到格式化后的完整文本
         fullText = main_msg.as_string()
@@ -66,9 +70,9 @@ class SendEmail():
             server.quit()
 
 #def main():
-    #mail = SendEmail(sender,recipients,Excel_name,smtp_server,account,passwd)
-    #mail.send_email()
-    #print "The class SendEmail sent the email!"
+#   mail = SendEmail(sender,recipients,"主题", "正文", Excel_name,smtp_server,account,passwd)
+#  mail.send_email()
+#    print "邮件已经发送成功！"
 
 #if __name__=="__main__":
 #    main()
