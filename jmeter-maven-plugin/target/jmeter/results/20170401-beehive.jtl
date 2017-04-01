@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="141" it="0" lt="141" ct="0" ts="1491011609816" s="true" lb="login" rc="200" rm="OK" tn="beehive 1-1" dt="text" by="766" sby="0" ng="1" na="1">
+  <assertionResult>
+    <name>assertion-/gongsibao-uc/ucuser/loginAjax</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" it="0" lt="14" ct="0" ts="1491011609977" s="true" lb="get_menu" rc="200" rm="OK" tn="beehive 1-1" dt="text" by="3477" sby="0" ng="1" na="1">
+  <assertionResult>
+    <name>assertion-/gongsibao-uc/ucuser/menu</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="68" it="0" lt="23" ct="0" ts="1491011609992" s="true" lb="get_user_info" rc="200" rm="OK" tn="beehive 1-1" dt="text" by="76362" sby="0" ng="1" na="1">
+  <assertionResult>
+    <name>assertion-/gongsibao-uc/ucuser/currentInfo </name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="237" it="0" lt="237" ct="0" ts="1491011610064" s="true" lb="get_follow_customer_num" rc="200" rm="OK" tn="beehive 1-1" dt="text" by="292" sby="0" ng="1" na="1">
+  <assertionResult>
+    <name>assertion-/gongsibao-crm/api/customer/follow/num</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="46" it="0" lt="46" ct="0" ts="1491011610302" s="true" lb="/gongsibao-sys/dict/getByType" rc="200" rm="OK" tn="beehive 1-1" dt="text" by="1500" sby="0" ng="1" na="1">
+  <assertionResult>
+    <name>响应断言</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+
+</testResults>
