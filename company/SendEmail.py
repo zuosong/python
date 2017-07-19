@@ -14,12 +14,12 @@ import os.path
 import time
 import sys
 
-#sender = "zu.so@163.com"
-#recipients = "zuosong_0@163.com"
-#Excel_name = "E:\\Private Doc\\files\\test.xls"#附件名
-#smtp_server="smtp.163.com"
-#account="zu.so"
-#passwd="qwertyu"
+sender = "zu.so@163.com"
+recipients = "zuosong_0@163.com"
+Excel_name = "E:\\Private Doc\\files\\file.xls"#附件名
+smtp_server="smtp.163.com"
+account="zu.so"
+#passwd="sdasf"
 
 class SendEmail():
     """A class that can send email."""
@@ -71,8 +71,8 @@ class SendEmail():
 
 #def main():
 #   mail = SendEmail(sender,recipients,"主题", "正文", Excel_name,smtp_server,account,passwd)
-#  mail.send_email()
-#    print "邮件已经发送成功！"
+#   mail.send_email()
+#   print "邮件已经发送成功！"
 
 #if __name__=="__main__":
 #    main()

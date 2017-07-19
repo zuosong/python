@@ -49,8 +49,9 @@ sender = "zu.so@163.com"
 recipients = "zuosong_0@163.com"
 smtp_server="smtp.163.com"
 account="zu.so"
-passwd="wqrrrt"
-subject = "官网每日测试-" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+passwd="2@1"
+
+subject = u"官网每日测试-" + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())
 
 class BrowserOperation():
     """ BrowserOperation class"""

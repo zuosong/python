@@ -8,10 +8,7 @@ class HotelRoomCalc(object):
         self.roomTax = rm
         self.roomRate = rt
 
-    def calcTotal(self,days = 1):
+    def calcTotal(self, days = 1):
         'Calculate total; default to daily rate'
-        daily = round((self.roomRate * 14(1+self.roomTax+self.salesTax)),2)
-        return float(days)*daily
-
-    
-        
+        daily = round((self.roomRate * (1 + self.roomTax + self.salesTax)), 2)
+        return float(days) * daily
