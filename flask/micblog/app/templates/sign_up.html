@@ -9,7 +9,7 @@
   {% endfor %}
 
   <p>E-mail: {{ form.user_email }} </p>
-  {% for error in form.error.user_email %}
+  {% for error in form.errors.user_email %}
   <p style="color:red;">[-]{{ error }}</p>
   {% endfor %}
 
