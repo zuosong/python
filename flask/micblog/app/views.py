@@ -7,7 +7,7 @@ from flask.ext.login import login_user,logout_user,current_user,login_required
 
 from models import User,Post,ROLE_USER,ROLE_ADMIN
 from app import app,db,lm
-from forms import LoginForm, SignUpForm
+from forms import LoginForm, SignUpForm, AboutMeForm
 
 @lm.user_loader
 def load_user(user_id):
@@ -75,7 +75,7 @@ def sign_up():
         register_check = User.query.filter(db.or_(User.nickname == user_name, User.email == user_email)).first()
         if register_check:
             flash("error: The user's name or email already exists!")
-            return redirect('/sign_up')
+            return redirect('/sign-up')
 
         if len(user_name) and len(user_email):
             user.nickname = user_name
@@ -92,3 +92,15 @@ def sign_up():
             return redirect('/index')
 
     return render_template("sign_up.html",form=form)
+
+@app.route('/user/<int:user_id>',methods=["POST","GET"])
+@login_required
+def users(user_id):
+    form = AboutMeForm()
+    user = User.query.filter(User.id == user_id).first()
+    if not user:
+        flash("The user is not exist.")
+        redirect("/index")
+    blogs = user.posts.all()
+
+    return render_template("user.html", form=form,user=user,blogs=blogs)
