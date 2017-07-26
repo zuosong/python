@@ -8,9 +8,9 @@ ROLE_ADMIN = 1
 class User(db.Model):
     """"""
     id = db.Column(db.Integer,primary_key = True)
-    nickname = db.Column(db.String(64),unique =True)
-    email = db.Column(db.String(120),unique = True)
-    role = db.Column(db.SmallInteger,default = ROLE_USER)
+    nickname = db.Column(db.String(15),index=True, unique =True)
+    email = db.Column(db.String(128),index =True, unique = True)
+    role = db.Column(db.SmallInteger,default=ROLE_USER)
     posts = db.relationship('Post', backref = 'author',lazy = 'dynamic')
 
     def is_authenticated(self):

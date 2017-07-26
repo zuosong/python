@@ -50,7 +50,7 @@ def login():
                 return redirect('/login')
 
             flash('Your name: ' + request.form.get('user_name'))
-            flash('remember_me:' + str(request.form.get('remember_me')))
+            flash('remember_me?' + str(request.form.get('remember_me')))
             return redirect(url_for("users",user_id=current_user.id))
         else:
             flash('Login failed,Your name is not exist!')
