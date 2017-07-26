@@ -9,7 +9,7 @@
     {% for blog in blogs %}
     <p>{{ blog.body }}</p>
     <p>{{ blog.timestamp.strftime("%a,%d %b %Y %H:%M:%S") }}</p>
-    </hr>
+    <hr/>
     {% endfor %}
 {% else %}
     <p style="color:blue;"> the guy is so lazy....</p>
