@@ -18,3 +18,7 @@ class SignUpForm(Form):
 class AboutMeForm(Form):
     describe = TextAreaField('about me', validators =[Required(),Length(max=140)])
     submit = SubmitField('YES!')
+
+class PublishBlogForm(Form):
+    body = TextAreaField('blog content', validators=[Required()])
+    submit = SubmitField('Submit')
