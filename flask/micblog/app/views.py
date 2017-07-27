@@ -136,10 +136,10 @@ def publish(user_id):
 @app.route('/user/about-me/<int:user_id>',methods=["GET","POST"])
 @login_required
 def about_me(user_id):
-    user = User.query.filter(User.id = user_id).first()
+    user = User.query.filter(User.id == user_id).first()
     if request.method == "POST":
         content = request.form.get("describe")
-        if len(content) and len(content) <=140
+        if len(content) and len(content) <=140:
             user.about_me = content
             try:
                 db.session.add(user)
