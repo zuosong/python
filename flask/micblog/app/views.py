@@ -150,3 +150,17 @@ def about_me(user_id):
         else:
             flash("Sorry, May be your data have some error.")
     return redirect(url_for("users",user_id = user_id))
+
+@app.route('/user/<int:user_id>',defaults={'page':1},methods=["POST","GET"])
+@app.route('/user/<int:user_id>/page/<int:page>',methods=["POST","GET"])
+@login_required
+def users(user_id,page):
+    form = AboutMeForm()
+    if user_id != current_user.id:
+        flash("Sorry,you can only view to your profile!","error")
+        return redirect("/index")
+ 
+    blogs = user.posts.paginate(page,PER_PAGE,False).items
+ 
+    return render_template("user.html",form=form,pagination =pagination)
+
