@@ -160,7 +160,7 @@ def users(user_id,page):
         flash("Sorry,you can only view to your profile!","error")
         return redirect("/index")
  
-    blogs = user.posts.paginate(page,PER_PAGE,False).items
+    pagination = Post.query.filter_by(user_id = current_user.id).order_by(db.desc(Post.timestamp).paginate(page,PER_PAGE,False)
  
     return render_template("user.html",form=form,pagination =pagination)
 
